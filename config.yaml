@@ -1,0 +1,6 @@
+config:
+  inital-setup: True
+  micro-server: True
+  backup-dir: './backups'
+  micro-server-dir: './repos'
+  task-manager: 'cron'

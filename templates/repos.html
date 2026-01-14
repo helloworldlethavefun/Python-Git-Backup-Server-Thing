@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <title>Git Server</title>
+    <link rel="stylesheet" href="static/main.css">
+  </head>
+  <body>
+    <!-- Basic page stuff, not really that interesting -->
+    <h1>Github Repos</h1>
+		{% if repos %}
+		<form method="POST" action="{{ url_for('backupRepo') }}">
+			{% for repo in repos %}
+			<input type="radio" name='chosen_repo' value='{{ repo }}'>{{ repo }}</input><br>
+			{% endfor %}
+			<input type="submit">
+		</form>
+		{% else %}
+		<h2>An error has occurred, please check the console</h2>
+		{% endif %}
+  </body>
+</html>
+

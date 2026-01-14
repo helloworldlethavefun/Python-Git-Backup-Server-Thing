@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Git Server</title>
+    <link rel="stylesheet" href="static/main.css">
+    <script src="https://unpkg.com/flashy-js@latest/dist/flashy.min.js"></script>
+  </head>
+  <body>
+    <!-- Pull the messages to flask the user (if there are any) -->
+    <flash-messages data-max-messages="5"></flash-messages>
+
+    <!-- Basic page stuff, not really that interesting -->
+    <h1>Hello World!</h1>
+	<a href='{{ url_for('backupRepo') }}'>Backup Repo</a>
+    <h2>{{ apistatus }}</h2>
+    {% if files %}
+      <ul>
+        {% for file in files %}
+          <li>{{ file }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <!-- Fancy JS to flash the message to the user -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                Flashy('flash-messages', {
+                    type: '{{ category if category in ["success", "error", "warning", "info"] else "info" }}',
+                    title: '{{ category | capitalize }}',
+                    message: '{{ message | safe }}',
+                    expiry: 5000,
+                    globalClose: true
+                });
+            {% endfor %}
+        {% endif %}
+      {% endwith %}
+    });
+    </script>
+  </body>
+</html>
