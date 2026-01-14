@@ -11,7 +11,7 @@ from pathlib import Path
 from starlette.responses import StreamingResponse
 import subprocess
 
-# Define the application
+# Init the flask application and generate an app secret key.
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
@@ -27,14 +27,16 @@ def get_user():
     return r.json().get('login')
 
 
-# Config variables
+# Gets token and the username of the authorized user
 ghToken = os.environ["GITHUB_TOKEN"]
 user = get_user()
 
 
+# Pulls config options from config.yaml. View config.yaml for configuration options
 microServerDir = config['micro-server-dir']
 backupDir = config['backup-dir']
 taskScheduler = config['task-scheduler']
+autoRefresh = config['auto-refresh']
 refreshFrequency = config['refresh-frequency']
 port = config['app-port']
 
@@ -45,6 +47,7 @@ def backupGhRepo(repo):
         os.system(f'git clone https://oauth2:{ghToken}@github.com/{user}/{repo}.git {backupDir}/{repo}')
     except Exception as e:
         print(e)
+
 
 #Just send a request to the github API and if it returns 200 then confirm that the API can be reached
 def verifyGithubConnection():
@@ -60,19 +63,26 @@ def verifyGithubConnection():
         app.logger.error(e)
         return 'Hmmm something is wrong. Please check the console.'
 
+
+# Request a list of user's git repositories from github
 def getListOfGithubRepos():
     headers = {'Accept': 'application/vnd.github+json', 'Authorization': f'Bearer {ghToken}', 'X-GitHub-Api-Version': '2022-11-28'}
     r = requests.get('https://api.github.com/user/repos') # Change back to the directory this script is in
 
+
+# Get the latest commit date of a repository
 def getLastCommitDate(repo):
     args = [f'git --git-dir {backupDir}/{repo}/.git log -n 1 | grep Date | tee']
     commitDate = subprocess.run(args, shell=True, check=True, capture_output=True, text=True)
     return commitDate.stdout.strip()
 
+
+# Creates the directories as per configured
 def createDirectories():
     if os.path.exists(backupDir) == False and os.path.exists(microServerDir) == False:
         os.mkdir(backupDir)
         os.mkdir(backupDir)
+
 
 # Index route. This is the 'dashboard' for everything, showing the backed up repos, 
 # latest pulled commits, and the status of the chosen API
@@ -135,7 +145,7 @@ def backupRepo():
 
 
 
-# The Following code is part of the micro git server. Credit for the original code to meyer1994 on Github
+# The Following code is for the "micro git server." Credit for the original code to meyer1994 on Github
 # This was modified to work with flask, rather than uvicorn and fast_api
 # Original Code: https://github.com/meyer1994/gitserver/tree/master
 
@@ -149,8 +159,6 @@ def info_refs(repo_path):
     
     real_path = Path(f'{microServerDir}/{repo_path}') 
 
-    print(repo_path)
-
     if real_path.exists():
         repo = Git(str(real_path))
     else:
@@ -158,12 +166,12 @@ def info_refs(repo_path):
 
     data_io = repo.inforefs(service)
     
-    # 5. Return a Flask Response (not StreamingResponse)
     media = f'application/x-{service}-advertisement'
     return Response(
         data_io.getvalue(), 
         mimetype=media
     )
+
 
 @app.route('/<path:repo_path>/<service_name>', methods=['POST'])
 def service_rpc(repo_path, service_name):

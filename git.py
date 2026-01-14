@@ -1,5 +1,6 @@
-# Git file 
-# The file that will handle the actual git side of things
+# The Following code is for the "micro git server." Credit for the original code to meyer1994 on Github
+# This was modified to work with flask, rather than uvicorn and fast_api
+# Original Code: https://github.com/meyer1994/gitserver/tree/master
 
 # Import modules
 import os

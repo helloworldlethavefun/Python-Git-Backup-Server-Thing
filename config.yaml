@@ -14,10 +14,10 @@ task-scheduler: 'cron'
 
 # Enables auto refreshing of the page.
 # Options: True/False
-auto-refresh-two: True
+auto-refresh: True
 
 # Frequency for the auto refreshing of the page.
-refresh-frequency: 60
+refresh-frequency: 300
 
 # Sets the port for the flask application.
 app-port: 8080
