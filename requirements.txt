@@ -1,0 +1,6 @@
+flask
+requests
+pyyaml
+pfluent
+python-crontab
+starlette

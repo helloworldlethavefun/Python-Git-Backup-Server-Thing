@@ -9,7 +9,7 @@
 		{% if repos %}
 		<form method="POST" action="{{ url_for('backupRepo') }}">
 			{% for repo in repos %}
-			<input type="radio" name='chosen_repo' value='{{ repo }}'>{{ repo }}</input><br>
+			<input type="checkbox" name='chosen_repo' value='{{ repo }}'>{{ repo }}</input><br>
 			{% endfor %}
 			<input type="submit">
 		</form>

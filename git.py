@@ -6,7 +6,7 @@ import os
 import io
 import stat
 from typing import IO
-from subprocess import PIPE
+import subprocess
 from pathlib import Path
 
 from pfluent import Runner

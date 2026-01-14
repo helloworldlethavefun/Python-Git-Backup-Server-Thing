@@ -2,6 +2,7 @@
   <head>
     <title>Git Server</title>
     <link rel="stylesheet" href="static/main.css">
+	<meta http-equiv="refresh" content="{{ refreshFrequency }}">
     <script src="https://unpkg.com/flashy-js@latest/dist/flashy.min.js"></script>
   </head>
   <body>
@@ -11,11 +12,12 @@
     <!-- Basic page stuff, not really that interesting -->
     <h1>Hello World!</h1>
 	<a href='{{ url_for('backupRepo') }}'>Backup Repo</a>
-    <h2>{{ apistatus }}</h2>
-    {% if files %}
+	<h2><strong>API Status</strong>: {{ apistatus }}</h2>
+    {% if repos %}
+	  <h2><strong>Backed Up Repositories</strong></h2>
       <ul>
-        {% for file in files %}
-          <li>{{ file }}</li>
+        {% for k, v in repos.items() %}
+		<li>Last commit for <strong>{{ k }}</strong>: {{ v }}</li>
         {% endfor %}
       </ul>
     {% endif %}
@@ -30,7 +32,7 @@
                     type: '{{ category if category in ["success", "error", "warning", "info"] else "info" }}',
                     title: '{{ category | capitalize }}',
                     message: '{{ message | safe }}',
-                    expiry: 5000,
+                    expiry: 9000,
                     globalClose: true
                 });
             {% endfor %}
