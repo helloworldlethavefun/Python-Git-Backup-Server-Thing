@@ -2,7 +2,7 @@
 # Morgan Piper 11/01/26
 
 # Imports
-from flask import Flask, render_template, redirect, url_for, flash, send_from_directory, request, Response, make_response
+from flask import Flask, render_template, redirect, url_for, flash, send_from_directory, request, Response, make_response, abort
 from git import Git
 import os
 import requests
@@ -10,18 +10,22 @@ import yaml
 from pathlib import Path
 from starlette.responses import StreamingResponse
 import subprocess
+from taskScheduler import *
+
+
 
 # Init the flask application and generate an app secret key.
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 
+# Grab the config settings from config.yaml
 with open('config.yaml', 'r') as file:
         config = yaml.safe_load(file)
         file.close()
 
-
-def get_user():
+# Literally just get of the username of the authenticated github user with the token
+def get_gh_user():
     headers = {'Authorization': f'Bearer {ghToken}', 'X-Github-Api-Version': '2022-11-28'}
     r = requests.get('https://api.github.com/user', headers=headers)
     return r.json().get('login')
@@ -29,16 +33,19 @@ def get_user():
 
 # Gets token and the username of the authorized user
 ghToken = os.environ["GITHUB_TOKEN"]
-user = get_user()
+user = get_gh_user()
 
 
-# Pulls config options from config.yaml. View config.yaml for configuration options
+# Set the config options based on what options are set in config.yaml. View config.yaml for configuration options
+microServerStatus = config['micro-server']
 microServerDir = config['micro-server-dir']
 backupDir = config['backup-dir']
 taskScheduler = config['task-scheduler']
 autoRefresh = config['auto-refresh']
 refreshFrequency = config['refresh-frequency']
 port = config['app-port']
+debug = config['app-debug']
+host = config['app-host']
 
 
 # Pulls the git repository from github
@@ -83,6 +90,11 @@ def createDirectories():
         os.mkdir(backupDir)
         os.mkdir(backupDir)
 
+# Define a custom message for rasing 403
+@app.errorhandler(403)
+def microserverIsDisabled(e):
+    return 'Sorry, the microserver is disabled', 403
+
 
 # Index route. This is the 'dashboard' for everything, showing the backed up repos, 
 # latest pulled commits, and the status of the chosen API
@@ -120,7 +132,8 @@ def backupRepo():
     if request.method == 'POST':
         chosen_repos = request.form.getlist('chosen_repo')
         for chosen_repo in chosen_repos:
-            backupGhRepo(chosen_repo)
+            #backupGhRepo(chosen_repo)
+            addCronJob(chosen_repo)
             flash(f'{chosen_repo} has been successfully backed up!')
         return redirect(url_for('home'))
   
@@ -152,6 +165,10 @@ def backupRepo():
 
 @app.route('/<path:repo_path>/info/refs', methods=['GET'])
 def info_refs(repo_path):
+    # If the microserver is disabled then raise 403
+    if 'Disabled' in microServerStatus:
+        abort(403)
+
     service = request.args.get('service')
 
     if ".git" not in repo_path:
@@ -175,6 +192,10 @@ def info_refs(repo_path):
 
 @app.route('/<path:repo_path>/<service_name>', methods=['POST'])
 def service_rpc(repo_path, service_name):
+    # If the microserver is disabled, raise 403
+    if 'Disabled' in microServerStatus:
+        abort(403)
+
     real_path = Path(f'{micro-server-dir}/{repo_path}')
     repo = Git(str(real_path))
 
@@ -192,4 +213,4 @@ def service_rpc(repo_path, service_name):
 # If ran as a script, create the required directories and run the flask application
 if __name__ == "__main__":
     createDirectories()
-    app.run(port=port, debug=True)
+    app.run(port=port, debug=debug, host=host)

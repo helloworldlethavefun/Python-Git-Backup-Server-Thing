@@ -1,23 +1,23 @@
 # Configuration File for the Python Git Server Thing
 
 # Enables the 'micro git server' built in. 
-# Options: True/False
-micro-server: True
+micro-server: Enabled
 
 # Sets the directory for backup repos from github and repositories from the 'micro server'
 backup-dir: './backups'
-micro-server-dir: './repos'
+micro-server-dir: './backups'
 
 # Task Scheduler for the regular 'git pull' command.
-# Options: cron, launchd, python
 task-scheduler: 'cron'
 
+
 # Enables auto refreshing of the page.
-# Options: True/False
 auto-refresh: True
 
 # Frequency for the auto refreshing of the page.
 refresh-frequency: 300
 
-# Sets the port for the flask application.
+# Sets options for when the flask app is running
 app-port: 8080
+app-debug: True
+app-host: 127.0.0.1
