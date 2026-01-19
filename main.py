@@ -2,22 +2,17 @@
 # Morgan Piper 11/01/26
 
 # Imports
-from flask import Flask, render_template, redirect, url_for, flash, send_from_directory, request, Response, make_response, abort
-from git import Git
+from flask import Flask, render_template, redirect, url_for, flash, send_from_directory, request, Response, make_response, abort, send_file
 import os
 import requests
 import yaml
 from pathlib import Path
-from starlette.responses import StreamingResponse
 import subprocess
 from taskScheduler import *
-
-
 
 # Init the flask application and generate an app secret key.
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-
 
 # Grab the config settings from config.yaml
 with open('config.yaml', 'r') as file:
@@ -30,15 +25,8 @@ def get_gh_user():
     r = requests.get('https://api.github.com/user', headers=headers)
     return r.json().get('login')
 
-
-# Gets token and the username of the authorized user
-ghToken = os.environ["GITHUB_TOKEN"]
-user = get_gh_user()
-
-
-# Set the config options based on what options are set in config.yaml. View config.yaml for configuration options
-microServerStatus = config['micro-server']
-microServerDir = config['micro-server-dir']
+# Set the config options based on what options are set in config.yaml. View readme for configuration options
+apiServer = config['api-server']
 backupDir = config['backup-dir']
 taskScheduler = config['task-scheduler']
 autoRefresh = config['auto-refresh']
@@ -46,6 +34,12 @@ refreshFrequency = config['refresh-frequency']
 port = config['app-port']
 debug = config['app-debug']
 host = config['app-host']
+
+
+# Gets token and the username of the authorized user
+if 'github' in apiServer:
+    ghToken = os.environ["GITHUB_TOKEN"]
+    user = get_gh_user()
 
 
 # Pulls the git repository from github
@@ -83,18 +77,10 @@ def getLastCommitDate(repo):
     commitDate = subprocess.run(args, shell=True, check=True, capture_output=True, text=True)
     return commitDate.stdout.strip()
 
-
 # Creates the directories as per configured
 def createDirectories():
     if os.path.exists(backupDir) == False and os.path.exists(microServerDir) == False:
         os.mkdir(backupDir)
-        os.mkdir(backupDir)
-
-# Define a custom message for rasing 403
-@app.errorhandler(403)
-def microserverIsDisabled(e):
-    return 'Sorry, the microserver is disabled', 403
-
 
 # Index route. This is the 'dashboard' for everything, showing the backed up repos, 
 # latest pulled commits, and the status of the chosen API
@@ -117,8 +103,22 @@ def home():
         commits[file] = date
 
     # Render all of this in the index template
-    return render_template('index.html', refreshFrequency=refreshFrequency, repos=commits, apistatus=apiStatus)
+    return render_template('index.html', 
+                           refreshFrequency=refreshFrequency, 
+                           repos=commits,
+                           apiserver=apiServer,
+                           apistatus=apiStatus,
+                           user=user
+                           )
 
+# When this endpoint is requested, just return the output of pullLog.log
+@app.route('/getpulllogs')
+def getPullLogs():
+    try:
+        return send_file('pullLog.log')
+    except Exception as e:
+        print(e)
+        return 'Sorry, there was an error. Please check the console'
 
 # This route backs up the chosen repository from github
 @app.route('/backupRepo', methods=['GET', 'POST'])
@@ -132,8 +132,8 @@ def backupRepo():
     if request.method == 'POST':
         chosen_repos = request.form.getlist('chosen_repo')
         for chosen_repo in chosen_repos:
-            #backupGhRepo(chosen_repo)
-            addCronJob(chosen_repo)
+            backupGhRepo(chosen_repo)
+            addToBackup(chosen_repo)
             flash(f'{chosen_repo} has been successfully backed up!')
         return redirect(url_for('home'))
   
@@ -152,65 +152,12 @@ def backupRepo():
         name = i.get("name")
         repos.append(name)
    
-    
     # Render the repos.html template and pass the list of users repositories
     return render_template('repos.html', repos=repos)
-
-
-
-# The Following code is for the "micro git server." Credit for the original code to meyer1994 on Github
-# This was modified to work with flask, rather than uvicorn and fast_api
-# Original Code: https://github.com/meyer1994/gitserver/tree/master
-
-
-@app.route('/<path:repo_path>/info/refs', methods=['GET'])
-def info_refs(repo_path):
-    # If the microserver is disabled then raise 403
-    if 'Disabled' in microServerStatus:
-        abort(403)
-
-    service = request.args.get('service')
-
-    if ".git" not in repo_path:
-        repo_path = repo_path + '.git'
-    
-    real_path = Path(f'{microServerDir}/{repo_path}') 
-
-    if real_path.exists():
-        repo = Git(str(real_path))
-    else:
-        repo = Git.init(str(real_path))
-
-    data_io = repo.inforefs(service)
-    
-    media = f'application/x-{service}-advertisement'
-    return Response(
-        data_io.getvalue(), 
-        mimetype=media
-    )
-
-
-@app.route('/<path:repo_path>/<service_name>', methods=['POST'])
-def service_rpc(repo_path, service_name):
-    # If the microserver is disabled, raise 403
-    if 'Disabled' in microServerStatus:
-        abort(403)
-
-    real_path = Path(f'{micro-server-dir}/{repo_path}')
-    repo = Git(str(real_path))
-
-    input_data = request.data 
-    
-    output_io = repo.service(service_name, input_data)
-
-    media = f'application/x-{service_name}-result'
-    return Response(
-        output_io.getvalue(), 
-        mimetype=media
-    )
-
 
 # If ran as a script, create the required directories and run the flask application
 if __name__ == "__main__":
     createDirectories()
+    if taskScheduler == 'cron':
+        createCronJob()
     app.run(port=port, debug=debug, host=host)

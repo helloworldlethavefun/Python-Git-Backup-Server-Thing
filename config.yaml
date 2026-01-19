@@ -1,15 +1,11 @@
 # Configuration File for the Python Git Server Thing
 
-# Enables the 'micro git server' built in. 
-micro-server: Enabled
-
 # Sets the directory for backup repos from github and repositories from the 'micro server'
 backup-dir: './backups'
-micro-server-dir: './backups'
 
 # Task Scheduler for the regular 'git pull' command.
 task-scheduler: 'cron'
-
+api-server: github
 
 # Enables auto refreshing of the page.
 auto-refresh: True

@@ -1,12 +1,14 @@
 # Python Git Backup Server
 
+## What is this?
+Just a small python app that automates backing up your git repositories. It clones them and then automates scripts for running git pull periodically.
+
 ## Config Reference
 
 These are some options for the config.yaml file. 
 
-`micro-server`: Determines if the built in 'git micro-server' is enabled. Options: True/False.
 
-`backup-dir` and `micro-server-dir`: Determines where the files for the git backups go and where the microserver looks for git repos.
+`backup-dir`: Determines where the files for the git backups go
 
 `task-scheduler`: This sets which task scheduler to use for auto pulling git. Options: cron, launchd, python
 

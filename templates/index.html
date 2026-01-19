@@ -10,11 +10,13 @@
     <flash-messages data-max-messages="5"></flash-messages>
 
     <!-- Basic page stuff, not really that interesting -->
-    <h1>Hello World!</h1>
+    <h1 class='centered'>Hello World!</h1>
 	<a href='{{ url_for('backupRepo') }}'>Backup Repo</a>
-	<h2><strong>API Status</strong>: {{ apistatus }}</h2>
+	<h2>API Server: {{ apiserver }}</h2>
+	<h2>API User: {{ user }}</h2>
+	<h2>API Status: {{ apistatus }}</h2>
     {% if repos %}
-	  <h2><strong>Backed Up Repositories</strong></h2>
+	  <h1><strong>Backed Up Repositories</strong></h2>
       <ul>
         {% for k, v in repos.items() %}
 		<li>Last commit for <strong>{{ k }}</strong>: {{ v }}</li>
