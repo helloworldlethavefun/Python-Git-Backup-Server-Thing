@@ -10,6 +10,13 @@ from pathlib import Path
 import subprocess
 from taskScheduler import *
 
+class RepositoryNotFound(Exception):
+    def __init__(self, repo):
+        self.repo = repo
+
+    def __str__(self):
+        return f'Sorry {self.repo} was not found'
+
 # Init the flask application and generate an app secret key.
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -44,11 +51,11 @@ if 'github' in apiServer:
 
 # Pulls the git repository from github
 def backupGhRepo(repo):
-    try:
-        os.system(f'git clone https://oauth2:{ghToken}@github.com/{user}/{repo}.git {backupDir}/{repo}')
-    except Exception as e:
-        print(e)
-
+        args = ['git', 'clone', f'https://oauth2:{ghToken}@github.com/{user}/{repo}.git', f'{backupDir}/{repo}']
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        stdout, stderr = process.communicate()
+        if 'not found' in stdout or 'not found' in stderr:
+            raise RepositoryNotFound(repo)
 
 #Just send a request to the github API and if it returns 200 then confirm that the API can be reached
 def verifyGithubConnection():
@@ -79,7 +86,7 @@ def getLastCommitDate(repo):
 
 # Creates the directories as per configured
 def createDirectories():
-    if os.path.exists(backupDir) == False and os.path.exists(microServerDir) == False:
+    if os.path.exists(backupDir) == False:
         os.mkdir(backupDir)
 
 # Index route. This is the 'dashboard' for everything, showing the backed up repos, 
@@ -132,9 +139,13 @@ def backupRepo():
     if request.method == 'POST':
         chosen_repos = request.form.getlist('chosen_repo')
         for chosen_repo in chosen_repos:
-            backupGhRepo(chosen_repo)
-            addToBackup(chosen_repo)
-            flash(f'{chosen_repo} has been successfully backed up!')
+            try:
+                backupGhRepo(chosen_repo)
+                addToBackup(chosen_repo)
+                flash(f'{chosen_repo} has been successfully backed up!')
+            except Exception as e:
+                print(e)
+                flash(f'There was an error backing up {chosen_repo}, please check the console', 'error')
         return redirect(url_for('home'))
   
 
