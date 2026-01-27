@@ -15,5 +15,5 @@ refresh-frequency: 300
 
 # Sets options for when the flask app is running
 app-port: 8080
-app-debug: True
+app-debug: False
 app-host: 127.0.0.1
