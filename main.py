@@ -75,7 +75,7 @@ def verifyGithubConnection():
 # Request a list of user's git repositories from github
 def getListOfGithubRepos():
     headers = {'Accept': 'application/vnd.github+json', 'Authorization': f'Bearer {ghToken}', 'X-GitHub-Api-Version': '2022-11-28'}
-    r = requests.get('https://api.github.com/user/repos') # Change back to the directory this script is in
+    r = requests.get('https://api.github.com/user/repos') 
 
 
 # Get the latest commit date of a repository
@@ -156,6 +156,7 @@ def backupRepo():
 
     # Get the json copy of the data
     data = r.json()
+    print(data)
 
 
     # Pull the names of the repositories from the json data
