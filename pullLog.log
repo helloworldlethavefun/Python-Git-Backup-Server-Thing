@@ -1,10 +1,52 @@
-bluefloyd-blog:
+
+fatal: cannot change to './test/test-repo
+': No such file or directory
+fatal: cannot change to './test/turtle
+': No such file or directory
+fatal: cannot change to './test/win95generator
+': No such file or directory
 Already up to date.
-test-repo:
-Updating 1d85d93..c7b48d2
+Already up to date.
+Already up to date.
+Already up to date.
+Already up to date.
+Already up to date.
+Already up to date.
+Already up to date.
+Already up to date.
+Updating c7b48d2..156a6c0
 Fast-forward
  anotherfile | 0
  1 file changed, 0 insertions(+), 0 deletions(-)
- create mode 100644 anotherfile
-win95generator:
+ delete mode 100644 anotherfile
+From https://github.com/helloworldlethavefun/test-repo
+   c7b48d2..156a6c0  main       -> origin/main
+Already up to date.
+Already up to date.
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/test-repo': No such file or directory
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/turtle': No such file or directory
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/win95generator': No such file or directory
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/test-repo': No such file or directory
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/turtle': No such file or directory
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/win95generator': No such file or directory
+fatal: cannot change to './backups/test-repo': No such file or directory
+fatal: cannot change to './backups/turtle': No such file or directory
+fatal: cannot change to './backups/win95generator': No such file or directory
+fatal: not a git repository (or any of the parent directories): .git
+Already up to date.
+Already up to date.
+Already up to date.
+fatal: not a git repository (or any of the parent directories): .git
+Updating 156a6c0..047fcca
+Fast-forward
+ some gonk ass file | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 some gonk ass file
+From https://github.com/helloworldlethavefun/test-repo
+   156a6c0..047fcca  main       -> origin/main
+Already up to date.
+Already up to date.
+fatal: not a git repository (or any of the parent directories): .git
+Already up to date.
+Already up to date.
 Already up to date.

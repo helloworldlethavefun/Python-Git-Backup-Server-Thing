@@ -5,7 +5,9 @@ Just a small python app that automates backing up your git repositories. It clon
 
 ## How to setup
 > ![IMPORTANT] 
-> This program relies on having git credentials already cached in the command line for running git pull. It's also worth noting that at this time, this program only supports backing up from github, although gitlab support is planned as well. And a final note is that cron is the only task scheduler setup in this program 
+> This program relies on having git credentials already cached in the command line for running git pull. It's also worth noting that at this time, this program only supports backing up from github, although gitlab support is planned as well. And a final note is that cron is the only task scheduler setup in this program as of right now. 
+
+> Docker containers are in the works
 
 - Clone the repository
 - Optional but reommended: Create a virtual environment `python -m venv .env`
