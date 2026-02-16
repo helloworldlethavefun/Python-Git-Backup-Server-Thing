@@ -1,7 +1,7 @@
 # Configuration File for the Python Git Server Thing
 
 # Sets the directory for backup repos from github and repositories from the 'micro server'
-backup-dir: './backups'
+backup-dir: '/home/bluefloyd/backups'
 
 # Task Scheduler for the regular 'git pull' command.
 task-scheduler: 'cron'
@@ -15,5 +15,5 @@ refresh-frequency: 300
 
 # Sets options for when the flask app is running
 app-port: 8080
-app-debug: False
-app-host: 127.0.0.1
+app-debug: True
+app-host: 0.0.0.0

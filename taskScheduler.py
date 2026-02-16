@@ -7,8 +7,8 @@ currentDir = os.getcwd()
 
 # Creates a cronjob scheduled to run at 6pm (18:00) every Sunday
 def createCronJob():
-    cron.remove_all(command=f'{currentDir}/backupRepos.sh')
-    job = cron.new(command=f'{currentDir}/backupRepos.sh')
+    cron.remove_all(command=f'{currentDir}/backuprepos.py')
+    job = cron.new(command=f'{currentDir}/backuprepos.py')
     job.setall('0 18 * * 7')
     cron.write()
 

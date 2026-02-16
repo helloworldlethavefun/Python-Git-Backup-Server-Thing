@@ -1,6 +1,6 @@
 .env
 __pycache__
-repos
+repos.txt
 backups
 config.yaml
 repos.txt

@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 :
 Updating 6d4153d..3141d5c
 Fast-forward
@@ -109447,6 +109448,69 @@ error: Your local changes to the following files would be overwritten by merge:
 Please commit your changes or stash them before you merge.
 Aborting
 Updating 3141d5c..a65d866
+bluefloyd-blog:
+failed to store: -61
+Already up to date.
+quiz-app:
+failed to store: -61
+=======
+fatal: cannot change to './test/test-repo
+': No such file or directory
+fatal: cannot change to './test/turtle
+': No such file or directory
+fatal: cannot change to './test/win95generator
+': No such file or directory
+Already up to date.
+Already up to date.
+Already up to date.
+Already up to date.
+Already up to date.
+Already up to date.
+Already up to date.
+Already up to date.
+Already up to date.
+Updating c7b48d2..156a6c0
+Fast-forward
+ anotherfile | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ delete mode 100644 anotherfile
+From https://github.com/helloworldlethavefun/test-repo
+   c7b48d2..156a6c0  main       -> origin/main
+Already up to date.
+Already up to date.
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/test-repo': No such file or directory
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/turtle': No such file or directory
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/win95generator': No such file or directory
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/test-repo': No such file or directory
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/turtle': No such file or directory
+fatal: cannot change to '/home/bluefloyd/Python-Git-Backup-Server-Thing/test/win95generator': No such file or directory
+fatal: cannot change to './backups/test-repo': No such file or directory
+fatal: cannot change to './backups/turtle': No such file or directory
+fatal: cannot change to './backups/win95generator': No such file or directory
+fatal: not a git repository (or any of the parent directories): .git
+Already up to date.
+Already up to date.
+Already up to date.
+fatal: not a git repository (or any of the parent directories): .git
+Updating 156a6c0..047fcca
+Fast-forward
+ some gonk ass file | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 some gonk ass file
+From https://github.com/helloworldlethavefun/test-repo
+   156a6c0..047fcca  main       -> origin/main
+Already up to date.
+Already up to date.
+fatal: not a git repository (or any of the parent directories): .git
+Already up to date.
+Already up to date.
+>>>>>>> 7bde94088706315b8a7cf822b4e06c2832c22a50
+Already up to date.
+:
+error: Pulling is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+fatal: Exiting because of an unresolved conflict.
 bluefloyd-blog:
 failed to store: -61
 Already up to date.
